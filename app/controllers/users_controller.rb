@@ -6,7 +6,8 @@ class UsersController < ApplicationController
 
   def donate
     @user = User.find(params[:id])
-    if @user.update(donate_params)
+    @user.money = @user.money + params[:money]
+    if @user.save
       render json: @user
     else
       render json: { errors: @user.errors.messages }, status: :unprocessable_entity
@@ -16,8 +17,5 @@ class UsersController < ApplicationController
 
   private
 
-  def donate_params
-    params.require(:user).permit(:money)
-  end
 
 end
