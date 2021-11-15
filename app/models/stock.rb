@@ -3,5 +3,6 @@ class Stock < ApplicationRecord
     validates :quantity, presence: true, numericality: { only_integer: true, greater_than_or_equal_to: 0}
     validates :purchase_price, presence: true
     validates :sold_price, presence: true
+    has_many :user_stocks
     
 end
