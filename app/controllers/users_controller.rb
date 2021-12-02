@@ -1,5 +1,5 @@
 class UsersController < ApplicationController
-  
+  skip_before_action :authenticate_user!, only: [:index]
   def index
     render json: { data: ActiveModel::SerializableResource.new(User.all, each_serializer: UserSerializer) }
   end
