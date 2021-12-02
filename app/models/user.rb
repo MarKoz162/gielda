@@ -4,4 +4,8 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :validatable
   has_many :user_stocks
+
+  def calculate_money(money)
+    update_column :money, (self.money + money)
+  end
 end

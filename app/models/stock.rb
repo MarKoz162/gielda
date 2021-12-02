@@ -5,4 +5,8 @@ class Stock < ApplicationRecord
     validates :sold_price, presence: true
     has_many :user_stocks
     
+    def calculate_quantity(quantity)
+      update_column :quantity, (self.quantity + quantity)
+    end
+
 end
