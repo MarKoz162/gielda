@@ -12,14 +12,14 @@ class UserStocksController < ApplicationController
         if UserStock.where(user_id: current_user.id, stock_id: params[:stock_id]).empty?
           @user_stocks = UserStock.create(user: current_user, stock: @stock, quantity: params[:quantity])
           if @user_stocks.save
-            calculate_money_and_quantity(params[:quantity])
+            subtract_money_and_quantity(params[:quantity])
           else
             render json: { errors: @user_stocks.errors.messages }, status: :unprocessable_entity
           end 
         else
           @user_stocks = UserStock.find_by(user_id: current_user, stock_id: @stock.id) 
           if @user_stocks.update(quantity: @user_stocks.quantity + params[:quantity])
-            calculate_money_and_quantity(params[:quantity])
+            subtract_money_and_quantity(params[:quantity])
           else
             render json: { errors: @user_stocks.errors.messages }, status: :unprocessable_entity
           end
@@ -65,12 +65,14 @@ class UserStocksController < ApplicationController
   def subtract_money_and_quantity(quantity)
     current_user.calculate_money(-quantity * @stock.purchase_price)
     @stock.calculate_quantity(-quantity)
+    @stock.calculate_price(quantity)
     render json: @user_stocks
   end
 
   def add_money_and_quantity(quantity)
     current_user.calculate_money(-quantity * @stock.sold_price)
     @stock.calculate_quantity(-quantity)
+    @stock.calculate_price(quantity)
   end
 
 end
